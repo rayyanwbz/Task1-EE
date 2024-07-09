@@ -1,0 +1,146 @@
+#include <Servo.h>
+
+// Define servos
+Servo hipLeft;
+Servo kneeLeft;
+Servo ankleLeft;
+Servo hipRight;
+Servo kneeRight;
+Servo ankleRight;
+
+// Define servo pins
+int hipLeftPin = 2;
+int kneeLeftPin = 3;
+int ankleLeftPin = 4;
+int hipRightPin = 5;
+int kneeRightPin = 6;
+int ankleRightPin = 7;
+
+// Define initial positions
+int hipCenter = 90;
+int kneeCenter = 90;
+int ankleCenter = 90;
+
+// Function to move a joint
+void moveJoint(int legNumber, int jointNumber, int angle) {
+    if (legNumber == 1) { // Left leg
+        if (jointNumber == 1) hipLeft.write(angle);
+        else if (jointNumber == 2) kneeLeft.write(angle);
+        else if (jointNumber == 3) ankleLeft.write(angle);
+    } else if (legNumber == 2) { // Right leg
+        if (jointNumber == 1) hipRight.write(angle);
+        else if (jointNumber == 2) kneeRight.write(angle);
+        else if (jointNumber == 3) ankleRight.write(angle);
+    }
+}
+
+// Function to move a leg
+void moveLeg(int legNumber, int angles[3]) {
+    moveJoint(legNumber, 1, angles[0]); // Move hip
+    moveJoint(legNumber, 2, angles[1]); // Move knee
+    moveJoint(legNumber, 3, angles[2]); // Move ankle
+    delay(200); // Pause for a short duration
+}
+
+// Function to walk forward
+void walkForward() {
+    // Step 1: Lift right leg and move forward
+    int rightForward[3] = {60, 100, 120};
+    moveLeg(1, rightForward); 
+    // Adjust left leg for balance
+    int leftBalance[3] = {90, 90, 90};
+    moveLeg(2, leftBalance);
+    delay(200); // Pause for a short duration
+
+    // Step 2: Lower right leg
+    moveLeg(1, leftBalance);
+    delay(200); // Pause for a short duration
+
+    // Step 3: Lift left leg and move forward
+    int leftForward[3] = {60, 100, 120};
+    moveLeg(2, leftForward);
+    // Adjust right leg for balance
+    moveLeg(1, leftBalance);
+    delay(200); // Pause for a short duration
+
+    // Step 4: Lower left leg
+    moveLeg(2, leftBalance);
+    delay(200); // Pause for a short duration
+}
+
+// Function to walk backward
+void walkBackward() {
+    // Step 1: Lift right leg and move backward
+    int rightBackward[3] = {120, 80, 60};
+    moveLeg(1, rightBackward); 
+    // Adjust left leg for balance
+    int leftBalance[3] = {90, 90, 90};
+    moveLeg(2, leftBalance);
+    delay(200); // Pause for a short duration
+
+    // Step 2: Lower right leg
+    moveLeg(1, leftBalance);
+    delay(200); // Pause for a short duration
+
+    // Step 3: Lift left leg and move backward
+    int leftBackward[3] = {120, 80, 60};
+    moveLeg(2, leftBackward);
+    // Adjust right leg for balance
+    moveLeg(1, leftBalance);
+    delay(200); // Pause for a short duration
+
+    // Step 4: Lower left leg
+    moveLeg(2, leftBalance);
+    delay(200); // Pause for a short duration
+}
+
+// Function to turn left
+void turnLeft() {
+    // Rotate hip of left leg
+    moveJoint(1, 1, 45);
+    // Rotate hip of right leg
+    moveJoint(2, 1, 135);
+    delay(200); // Pause for a short duration
+
+    // Return hips to initial position
+    moveJoint(1, 1, 90);
+    moveJoint(2, 1, 90);
+}
+
+// Function to turn right
+void turnRight() {
+    // Rotate hip of left leg
+    moveJoint(1, 1, 135);
+    // Rotate hip of right leg
+    moveJoint(2, 1, 45);
+    delay(200); // Pause for a short duration
+
+    // Return hips to initial position
+    moveJoint(1, 1, 90);
+    moveJoint(2, 1, 90);
+}
+
+void setup() {
+    // Attach servos to pins
+    hipLeft.attach(hipLeftPin);
+    kneeLeft.attach(kneeLeftPin);
+    ankleLeft.attach(ankleLeftPin);
+    hipRight.attach(hipRightPin);
+    kneeRight.attach(kneeRightPin);
+    ankleRight.attach(ankleRightPin);
+
+    // Set initial positions
+    hipLeft.write(hipCenter);
+    kneeLeft.write(kneeCenter);
+    ankleLeft.write(ankleCenter);
+    hipRight.write(hipCenter);
+    kneeRight.write(kneeCenter);
+    ankleRight.write(ankleCenter);
+}
+
+void loop() {
+    // Call functions based on user input or sensor data
+    // For example, you can call walkForward() to test the forward walking motion
+    walkForward();
+    delay(1000); // Delay to observe the movement
+}
